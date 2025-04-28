@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ artwork.title }}</h2>
+<img src="{{ artwork.image.url }}" width="400" alt="{{ artwork.title }}">
+<p>{{ artwork.description }}</p>
+<p>Starting price: ${{ artwork.starting_price }}</p>
+<p>Deadline: {{ artwork.deadline }}</p>
+
+<h3>Place Bid</h3>
+{% if user.is_authenticated and user.clientprofile %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Place Bid</button>
+    </form>
+    {% if your_bid %}
+        <p>Your last bid: ${{ your_bid.bid_amount }}</p>
+    {% endif %}
+{% elif not user.is_authenticated %}
+    <p><a href="{% url 'users:login' %}">Log in</a> to place a bid.</p>
+{% else %}
+    <p>Only clients can place bids.</p>
+{% endif %}
+
+<h3>Current Bids</h3>
+{% if bids %}
+    <ul>
+    {% for bid in bids %}
+        <li>{{ bid.client.user.username }}: ${{ bid.bid_amount }} at {{ bid.bid_time }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No bids yet.</p>
+{% endif %}
+
+<a href="{% url 'users:client_dashboard' %}">Back to Dashboard</a>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>{{ artwork.title }}</h2>
+    <img src="{{ artwork.image.url }}" alt="{{ artwork.title }}">
+    <p>{{ artwork.description }}</p>
+    <p>Starting price: ${{ artwork.starting_price }}</p>
+    <p>Deadline: {{ artwork.deadline }}</p>
+    {% if request.user.is_authenticated and artwork.artist == request.user.artistprofile %}
+        <a href="{% url 'artwork_update' artwork.pk %}">Edit</a>
+        <a href="{% url 'artwork_delete' artwork.pk %}">Delete</a>
+    {% endif %}
+    <a href="{% url 'artwork_list' %}">Back to list</a>
+{% endblock %}

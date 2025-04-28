@@ -1,0 +1,20 @@
+<!-- users/templates/users/client_dashboard.html -->
+<h2>Welcome, {{ user.username }}!</h2>
+
+<h3>Available Artworks</h3>
+<ul>
+  {% for artwork in artworks %}
+    <li>
+      <strong>{{ artwork.title }}</strong>
+      {% if artwork.image %}
+        <img src="{{ artwork.image.url }}" width="100" alt="{{ artwork.title }}">
+      {% endif %}
+      <br>
+      <a href="{% url 'artwork_detail_and_bid' artwork.pk %}">
+        View & Place Bid
+      </a>
+    </li>
+  {% empty %}
+    <li>No artworks available at the moment.</li>
+  {% endfor %}
+</ul>

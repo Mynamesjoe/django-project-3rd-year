@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Artworks</h1>
+    <a href="{% url 'artwork_create' %}">Add Artwork</a>
+    <ul>
+    {% for artwork in artworks %}
+        <li>
+            <a href="{% url 'artwork_detail' artwork.pk %}">
+                {{ artwork.title }} by {{ artwork.artist }}
+            </a>
+        </li>
+    {% empty %}
+        <li>No artworks listed yet.</li>
+    {% endfor %}
+    </ul>
+{% endblock %}

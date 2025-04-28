@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 60px auto; background: #fff; padding: 32px 24px; border-radius: 10px; box-shadow: 0 3px 16px #ececec;">
+    <h2 style="text-align:center; margin-bottom: 16px;">Login</h2>
+    
+    {% if form.errors %}
+        <div style="color: #b71c1c; margin-bottom: 16px; text-align:center;">
+            Invalid username or password. Please try again.
+        </div>
+    {% endif %}
+    {% if next %}
+        {% if user.is_authenticated %}
+            <div style="color: #b71c1c; margin-bottom: 16px; text-align:center;">
+                Your account doesn't have access to this page.
+            </div>
+        {% else %}
+            <div style="color: #1565c0; margin-bottom: 16px; text-align:center;">
+                Please login to see this page.
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div style="margin-bottom: 18px;">
+            {{ form.username.label_tag }}<br>
+            {{ form.username }}
+        </div>
+        <div style="margin-bottom: 20px;">
+            {{ form.password.label_tag }}<br>
+            {{ form.password }}
+        </div>
+        <button type="submit" style="width:100%; background: #f9c846; color:#262626; border: none; padding: 10px; font-size: 1rem; font-weight: 600; border-radius: 5px; cursor:pointer;">
+            Login
+        </button>
+    </form>
+    <p style="text-align:center; margin-top:18px;">
+        Don't have an account?
+        <a href="{% url 'users:register' %}" style="color:#f9c846;">Register</a>
+    </p>
+</div>
+{% endblock %}

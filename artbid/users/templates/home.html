@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SM ArtBidd System - Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f8fafc;
+        }
+        .navbar {
+            background: #262626;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            height: 60px;
+        }
+        .navbar .brand {
+            font-size: 1.7rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #f9c846;
+            text-decoration: none;
+        }
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            gap: 28px;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 12px;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .navbar a:hover {
+            background: #323438;
+        }
+        .center-content {
+            margin-top: 100px;
+            text-align: center;
+        }
+        .home-title {
+            font-size: 2.7rem;
+            font-weight: bold;
+            color: #222;
+            margin-bottom: 12px;
+        }
+        .subtitle {
+            font-size: 1.15rem;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        .profile-links {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .profile-links a {
+            margin: 0 10px;
+            text-decoration: underline;
+            color: #262626;
+            font-weight: bold;
+            transition: color 0.25s;
+        }
+        .profile-links a:hover {
+            color: #f9c846;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{% url 'users:home' %}" class="brand">SM ArtBidd System</a>
+        <ul>
+            <li><a href="{% url 'users:register' %}">Register</a></li>
+            <li><a href="{% url 'users:login' %}">Login</a></li>
+        </ul>
+    </nav>
+    <div class="center-content">
+        <div class="home-title">Welcome to SM ArtBidd System</div>
+        <div class="subtitle">
+            The premier platform for artists and clients to connect, create, and bid on incredible works of art.
+        </div>
+    </div>
+</body>
+</html>
