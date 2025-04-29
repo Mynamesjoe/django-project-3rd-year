@@ -1,4 +1,123 @@
 <!-- users/artist_dashboard.html -->
-<h1>Welcome, {{ user.username }} (Artist)!</h1>
-<p>This is your Artist Dashboard.</p>
-<a href="{% url 'my_artworks' %}">My Artworks</a>
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Artist Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}"><!-- If using a separate CSS file, else see below internal style -->
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: 
+                linear-gradient(rgba(7, 37, 212, 0.73), rgba(7, 37, 212, 0.85)),
+                url('{% static "artbid/background.jpg" %}') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+        }
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.36);
+            padding: 1rem 2rem;
+        }
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+        }
+        .navbar-logo img {
+            height: 48px;
+            width: 48px;
+            margin-right: 12px;
+            border-radius: 50%;
+            background: #0047ff;
+            border: 2px solid #fff;
+        }
+        .navbar .logout-btn {
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s, color 0.2s;
+        }
+        .navbar .logout-btn:hover {
+            background: #fff;
+            color: #0033aa;
+            border-color: #fff;
+        }
+        .dashboard-container {
+            max-width: 520px;
+            margin: 5% auto 0 auto;
+            background: rgba(255,255,255,0.14);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.21);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+        h1 {
+            margin-top: 0;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+        .dashboard-btn {
+            display: block;
+            width: 100%;
+            margin: 1.2rem 0;
+            background: #0047ff;
+            color: #fff;
+            padding: 0.95rem 0;
+            border: none;
+            border-radius: 28px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            letter-spacing: 0.02em;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 3px 8px 0 rgba(0, 71, 255, 0.08);
+        }
+        .dashboard-btn:hover {
+            background: #00178A;
+        }
+        @media (max-width: 600px) {
+            .dashboard-container {
+                max-width: 95vw;
+                padding: 1rem;
+            }
+            .navbar {
+                flex-direction: column;
+                gap: 0.7em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <!-- Reference Logo - you can replace the src if you serve it statically via Django -->
+            <img src="{% static 'artbid/logo.png' %}" alt="Logo">
+            <span style="font-size:1.6rem;font-weight:bold;letter-spacing:2px;">ArtistHub</span>
+        </div>
+        <form action="{% url 'users:logout' %}" method="post" style="margin:0;">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </nav>
+    <div class="dashboard-container">
+        <h1>Welcome, {{ user.username }} (Artist)!</h1>
+        <p>This is your Artist Dashboard.</p>
+        <a href="{% url 'my_artworks' %}">
+            <button class="dashboard-btn">My Artworks</button>
+        </a>
+        <a href="{% url 'users:edit_artist_profile' %}">
+            <button class="dashboard-btn" style="background:#fff;color:#0047ff;">Edit Profile Info</button>
+        </a>
+    </div>
+</body>
+</html>

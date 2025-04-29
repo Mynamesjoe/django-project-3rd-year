@@ -1,38 +1,68 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>{{ artwork.title }}</h2>
-<img src="{{ artwork.image.url }}" width="400" alt="{{ artwork.title }}">
-<p>{{ artwork.description }}</p>
-<p>Starting price: ${{ artwork.starting_price }}</p>
-<p>Deadline: {{ artwork.deadline }}</p>
+    <h2>{{ artwork.title }}</h2>
+    <img src="{{ artwork.image.url }}" width="400" alt="{{ artwork.title }}">
+    <p>{{ artwork.description }}</p>
+    <p>Starting price: ${{ artwork.starting_price }}</p>
+    <p>Deadline: {{ artwork.deadline }}</p>
 
-<h3>Place Bid</h3>
-{% if user.is_authenticated and user.clientprofile %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Place Bid</button>
-    </form>
-    {% if your_bid %}
-        <p>Your last bid: ${{ your_bid.bid_amount }}</p>
+    <!-- Timer Display -->
+    <div id="countdown" data-deadline="{{ artwork.deadline|date:'Y-m-d\TH:i:s' }}"></div>
+
+    <h3>Place Bid</h3>
+    {% if user.is_authenticated and user.clientprofile %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Place Bid</button>
+        </form>
+        {% if your_bid %}
+            <p>Your last bid: ${{ your_bid.bid_amount }}</p>
+        {% endif %}
+    {% elif not user.is_authenticated %}
+        <p><a href="{% url 'users:login' %}">Log in</a> to place a bid.</p>
+    {% else %}
+        <p>Only clients can place bids.</p>
     {% endif %}
-{% elif not user.is_authenticated %}
-    <p><a href="{% url 'users:login' %}">Log in</a> to place a bid.</p>
-{% else %}
-    <p>Only clients can place bids.</p>
-{% endif %}
 
-<h3>Current Bids</h3>
-{% if bids %}
-    <ul>
-    {% for bid in bids %}
-        <li>{{ bid.client.user.username }}: ${{ bid.bid_amount }} at {{ bid.bid_time }}</li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No bids yet.</p>
-{% endif %}
+    <h3>Current Bids</h3>
+    {% if bids %}
+        <ul>
+            {% for bid in bids %}
+                <li>{{ bid.client.user.username }}: ${{ bid.bid_amount }} at {{ bid.bid_time }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No bids yet.</p>
+    {% endif %}
+    <a href="{% url 'users:client_dashboard' %}">Back to Dashboard</a>
 
-<a href="{% url 'users:client_dashboard' %}">Back to Dashboard</a>
+    <script>
+        function countdown() {
+            const deadlineStr = document.getElementById('countdown').getAttribute('data-deadline');
+            const deadline = new Date(deadlineStr).getTime();
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const timeLeft = deadline - now;
+
+                if (timeLeft <= 0) {
+                    document.getElementById('countdown').innerHTML = "Auction Ended!";
+                } else {
+                    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                    document.getElementById('countdown').innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+                }
+            }
+
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+
+        window.onload = countdown;
+    </script>
 {% endblock %}

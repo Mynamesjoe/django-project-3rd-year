@@ -1,10 +1,152 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-    <h2>Register</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Sign up</button>
-    </form>
-    <p>Already have an account? <a href="{% url 'users:login' %}">Log in</a></p>
+<style>
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: var(--light-bg, #f8fafc);
+    }
+    .bg-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            background: radial-gradient(circle at 70% 20%, rgba(0,51,255,0.13) 0px, transparent 500px);
+            z-index: 0;
+        }
+    .register-main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 85vh;
+        padding-top: 42px;
+        background: var(--light-bg, #f8fafc);
+
+        background: 
+                linear-gradient(rgba(248,250,252,0.90), rgba(0,51,255,0.05)), 
+                url("{% static 'artbid/background.jpg' %}") center center/cover no-repeat fixed;
+    }
+    .register-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,51,255,0.08);
+        padding: 36px 38px 32px 38px;
+        max-width: 400px;
+        width: 100%;
+        position: relative;
+        margin-top: 18px;
+        border-top: 6px solid var(--primary-blue, #0033ff);
+    }
+    .register-logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 22px;
+    }
+    .register-logo img {
+        height: 54px;
+        width: 54px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    }
+    .register-title {
+        font-size: 2rem;
+        color: var(--primary-blue, #0033ff);
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .register-card p {
+        font-size: 1rem;
+        text-align: center;
+        color: var(--dark, #101334);
+        margin-bottom: 10px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .register-card label {
+        font-weight: 600;
+        color: var(--dark, #101334);
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .register-card input, .register-card select {
+        width: 100%;
+        padding: 12px 10px;
+        margin-bottom: 18px;
+        border: 1px solid #d4d6e1;
+        border-radius: 7px;
+        background: #f8fafc;
+        font-size: 1rem;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        transition: border 0.2s;
+    }
+    .register-card input:focus, .register-card select:focus {
+        border: 1.5px solid var(--primary-blue, #0033ff);
+        outline: none;
+        background: #fff;
+    }
+    .register-btn {
+        background: var(--primary-blue, #0033ff);
+        color: #fff;
+        padding: 12px 0;
+        width: 100%;
+        border: none;
+        border-radius: 22px;
+        font-weight: bold;
+        font-size: 1.08rem;
+        letter-spacing: 1px;
+        box-shadow: 0 2px 8px rgba(0,51,255,0.10);
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s;
+        margin-top: 4px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .register-btn:hover {
+        background: var(--accent-gold, #f9c846);
+        color: var(--primary-blue, #0033ff);
+    }
+    .register-login {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 1rem;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .register-login a {
+        color: var(--primary-blue, #0033ff);
+        font-weight: bold;
+        text-decoration: none;
+        transition: color 0.18s;
+    }
+    .register-login a:hover {
+        color: var(--accent-gold, #f9c846);
+        text-decoration: underline;
+    }
+    @media (max-width: 600px) {
+        .register-card { padding: 22px 8px 22px 8px; }
+        .register-main { padding-top: 14px; }
+    }
+</style>
+<div class="bg-overlay"></div>
+<div class="register-main">
+    <div class="register-logo">
+        <img src="{% static 'artbid/logo.png' %}" alt="Logo" class="logo">
+    </div>
+    <div class="register-card">
+        <div class="register-title">Create your Account</div>
+        <p>Join SM ArtBidd System &mdash; the premier platform for artists and clients.</p>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="register-btn" type="submit">Sign Up</button>
+        </form>
+        <div class="register-login">
+            Already have an account?
+            <a href="{% url 'users:login' %}">Log in</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

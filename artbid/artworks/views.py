@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Artwork
 from .forms import ArtworkForm
+from django.utils import timezone
+from datetime import timedelta
 
 def artwork_list(request):
     artworks = Artwork.objects.all().order_by('-created_at')
@@ -44,26 +46,13 @@ def artwork_delete(request, pk):
         return redirect('artwork_list')
     return render(request, 'artworks/artwork_confirm_delete.html', {'artwork': artwork})
 
-
-from django import forms
-from .models import Artwork
-from django.utils import timezone
-from datetime import timedelta
-
-class ArtworkForm(forms.ModelForm):
-    deadline = forms.DateTimeField(
-        widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-        initial=(timezone.now() + timedelta(days=7)).strftime('%Y-%m-%dT%H:%M')
-    )
-
-    class Meta:
-        model = Artwork
-        fields = ['title', 'description', 'image', 'starting_price', 'deadline']
-
-
-from django.contrib.auth.decorators import login_required
-
 @login_required
 def my_artworks(request):
     artworks = Artwork.objects.filter(artist=request.user.artistprofile)
     return render(request, 'artworks/artwork_list.html', {'artworks': artworks})
+
+from django.shortcuts import render, get_object_or_404
+
+def artwork_detail(request, pk):
+    artwork = get_object_or_404(Artwork, pk=pk)
+    return render(request, 'artworks/artwork_detail.html', {'artwork': artwork})

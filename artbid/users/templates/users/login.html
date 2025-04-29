@@ -1,43 +1,144 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<div style="max-width: 400px; margin: 60px auto; background: #fff; padding: 32px 24px; border-radius: 10px; box-shadow: 0 3px 16px #ececec;">
-    <h2 style="text-align:center; margin-bottom: 16px;">Login</h2>
-    
-    {% if form.errors %}
-        <div style="color: #b71c1c; margin-bottom: 16px; text-align:center;">
-            Invalid username or password. Please try again.
+<style>
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: var(--light-bg, #f8fafc);
+    }
+    .auth-main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 85vh;
+        padding-top: 42px;
+        background: 
+                linear-gradient(rgba(248,250,252,0.90), rgba(0,51,255,0.05)), 
+                url("{% static 'artbid/background.jpg' %}") center center/cover no-repeat fixed;
+    }
+    .auth-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,51,255,0.08);
+        padding: 36px 38px 32px 38px;
+        max-width: 400px;
+        width: 100%;
+        position: relative;
+        margin-top: 18px;
+        border-top: 6px solid var(--primary-blue, #0033ff);
+    }
+    .auth-logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 22px;
+    }
+    .auth-logo img {
+        height: 54px;
+        width: 54px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    }
+    .auth-title {
+        font-size: 2rem;
+        color: var(--primary-blue, #0033ff);
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .auth-card p {
+        font-size: 1rem;
+        text-align: center;
+        color: var(--dark, #101334);
+        margin-bottom: 10px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .auth-card label {
+        font-weight: 600;
+        color: var(--dark, #101334);
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .auth-card input, .auth-card select {
+        width: 100%;
+        padding: 12px 10px;
+        margin-bottom: 18px;
+        border: 1px solid #d4d6e1;
+        border-radius: 7px;
+        background: #f8fafc;
+        font-size: 1rem;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        transition: border 0.2s;
+    }
+    .auth-card input:focus, .auth-card select:focus {
+        border: 1.5px solid var(--primary-blue, #0033ff);
+        outline: none;
+        background: #fff;
+    }
+    .auth-btn {
+        background: var(--primary-blue, #0033ff);
+        color: #fff;
+        padding: 12px 0;
+        width: 100%;
+        border: none;
+        border-radius: 22px;
+        font-weight: bold;
+        font-size: 1.08rem;
+        letter-spacing: 1px;
+        box-shadow: 0 2px 8px rgba(0,51,255,0.10);
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s;
+        margin-top: 4px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .auth-btn:hover {
+        background: var(--accent-gold, #f9c846);
+        color: var(--primary-blue, #0033ff);
+    }
+    .auth-bottom {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 1rem;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .auth-bottom a {
+        color: var(--primary-blue,#0033ff);
+        font-weight: bold;
+        text-decoration: none;
+        transition: color 0.18s;
+    }
+    .auth-bottom a:hover {
+        color: var(--accent-gold, #f9c846);
+        text-decoration: underline;
+    }
+    @media (max-width: 600px) {
+        .auth-card { padding: 22px 8px 22px 8px; }
+        .auth-main { padding-top: 14px; }
+    }
+</style>
+<div class="bg-overlay"></div>
+<div class="auth-main">
+    <div class="auth-logo">
+        <img src="{% static 'artbid/logo.png' %}" alt="SM ArtBidd Logo">
+    </div>
+    <div class="auth-card">
+        <div class="auth-title">Log In</div>
+        <p>Welcome back to SM ArtBidd System</p>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="auth-btn" type="submit">Log In</button>
+        </form>
+        <div class="auth-bottom">
+            Don't have an account?
+            <a href="{% url 'users:register' %}">Sign up</a>
         </div>
-    {% endif %}
-    {% if next %}
-        {% if user.is_authenticated %}
-            <div style="color: #b71c1c; margin-bottom: 16px; text-align:center;">
-                Your account doesn't have access to this page.
-            </div>
-        {% else %}
-            <div style="color: #1565c0; margin-bottom: 16px; text-align:center;">
-                Please login to see this page.
-            </div>
-        {% endif %}
-    {% endif %}
-
-    <form method="post" novalidate>
-        {% csrf_token %}
-        <div style="margin-bottom: 18px;">
-            {{ form.username.label_tag }}<br>
-            {{ form.username }}
-        </div>
-        <div style="margin-bottom: 20px;">
-            {{ form.password.label_tag }}<br>
-            {{ form.password }}
-        </div>
-        <button type="submit" style="width:100%; background: #f9c846; color:#262626; border: none; padding: 10px; font-size: 1rem; font-weight: 600; border-radius: 5px; cursor:pointer;">
-            Login
-        </button>
-    </form>
-    <p style="text-align:center; margin-top:18px;">
-        Don't have an account?
-        <a href="{% url 'users:register' %}" style="color:#f9c846;">Register</a>
-    </p>
+    </div>
 </div>
 {% endblock %}

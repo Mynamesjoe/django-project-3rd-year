@@ -1,16 +1,241 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
-    <h1>Artworks</h1>
-    <a href="{% url 'artwork_create' %}">Add Artwork</a>
-    <ul>
-    {% for artwork in artworks %}
-        <li>
-            <a href="{% url 'artwork_detail' artwork.pk %}">
-                {{ artwork.title }} by {{ artwork.artist }}
-            </a>
+
+<style>
+    /* Color Scheme */
+    :root {
+        --primary-blue: #0033ff;
+        --accent-gold: #f9c846;
+        --light-bg: #f8fafc;
+        --white: #fff;
+        --dark: #101334;
+    }
+
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: var(--light-bg);
+        color: var(--dark);
+        position: relative;
+        min-height: 100vh;
+    }
+
+    /* Background Overlay */
+    .bg-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        background: radial-gradient(circle at 70% 20%, rgba(0, 51, 255, 0.13) 0px, transparent 500px);
+        z-index: 0;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+        background-color: var(--primary-blue);
+        color: var(--white);
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .navbar-brand {
+        display: flex;
+        align-items: center;
+        color: var(--accent-gold);
+        text-decoration: none;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .navbar-logo {
+        max-height: 40px;
+        margin-right: 10px;
+    }
+
+    .navbar-nav {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+    }
+
+    .nav-item {
+        margin-left: 20px;
+    }
+
+    .nav-link {
+        color: var(--white);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .nav-link:hover {
+        color: var(--accent-gold);
+    }
+
+    /* Back Button Styles */
+    .back-button {
+        position: right;
+        top: 20px;
+        left: 20px;
+        color: var(--white);
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        background-color: rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease;
+        z-index: 2; /* Ensure it's above the navbar */
+    }
+
+    .back-button:hover {
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    /* Main Content Styles */
+    .container {
+        width: 80%;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 1;
+    }
+
+    h1 {
+        color: var(--primary-blue);
+        text-align: center;
+    }
+
+    /* Artwork List Styles */
+    .artwork-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .artwork-item {
+        border: 1px solid #ddd;
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #f8f8f8;
+    }
+
+    .artwork-link {
+        display: flex;
+        align-items: center;
+        color: var(--primary-blue);
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .artwork-link:hover {
+        color: #0056b3;
+    }
+
+    .artwork-image {
+        max-width: 100px;
+        max-height: 100px;
+        margin-left: 20px;
+        border-radius: 5px;
+    }
+
+    .countdown {
+        font-size: 0.9em;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+
+    /* Add Artwork Button */
+    .add-artwork-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        transition: background-color 0.3s ease;
+    }
+
+    .add-artwork-btn:hover {
+        background-color: #218838;
+    }
+</style>
+
+<div class="bg-overlay"></div>
+
+<nav class="navbar">
+    <a href="#" class="navbar-brand">
+        <img src="{% static 'artbid/logo.png' %}" alt="Logo" class="navbar-logo">
+        SM ArtBidd System
+    </a>
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a href="{% url 'users:artist_dashboard' %}" class="back-button">Back</a>
         </li>
-    {% empty %}
-        <li>No artworks listed yet.</li>
-    {% endfor %}
     </ul>
+</nav>
+
+<div class="container">
+    <h1>Artworks</h1>
+    <a href="{% url 'artwork_create' %}" class="add-artwork-btn">Add Artwork</a>
+
+    <ul class="artwork-list">
+        {% for artwork in artworks %}
+        <li class="artwork-item">
+            <a href="{% url 'artwork_detail' artwork.pk %}" class="artwork-link">
+                {{ artwork.title }} by {{ artwork.artist }}
+                {% if artwork.image %}
+                <img src="{{ artwork.image.url }}" alt="{{ artwork.title }}" class="artwork-image">
+                {% endif %}
+            </a>
+            <div class="countdown" id="countdown-{{ artwork.pk }}" data-deadline="{{ artwork.deadline|date:'Y-m-d\TH:i:s' }}"></div>
+        </li>
+        {% empty %}
+        <li>No artworks listed yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+    function countdownAll() {
+        document.querySelectorAll('[id^="countdown-"]').forEach(function(div) {
+            const deadlineStr = div.getAttribute('data-deadline');
+            const deadline = new Date(deadlineStr).getTime();
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const timeLeft = deadline - now;
+
+                if (timeLeft <= 0) {
+                    div.innerHTML = "Auction Ended!";
+                } else {
+                    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                    div.innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+                }
+            }
+
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        });
+    }
+
+    window.onload = countdownAll;
+</script>
+
 {% endblock %}
